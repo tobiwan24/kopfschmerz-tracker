@@ -119,7 +119,6 @@
     <textarea id="notes" placeholder="Notizen"></textarea>
     <div class="button-row">
       <button onclick="saveData()">Speichern</button>
-      <button onclick="resetInputs()">Zurücksetzen</button>
     </div>
   </div>
 
@@ -147,7 +146,7 @@
       const entry = `${timestamp}; ${selectedButtons}; ${notes}`;
       history.push(entry);
       alert("Daten gespeichert!");
-      resetInputs();
+      resetInputs(); // Eingabefelder zurücksetzen nach Speicherung
     }
 
     // Buttons hervorheben
