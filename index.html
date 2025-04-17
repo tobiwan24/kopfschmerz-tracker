@@ -129,6 +129,22 @@
     .hidden {
       display: none;
     }
+
+    .search-bar {
+      margin: 10px 0;
+      width: 100%;
+      display: flex;
+      justify-content: center;
+    }
+
+    .search-bar input {
+      width: 90%;
+      max-width: 600px;
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
   </style>
 </head>
 <body>
@@ -190,14 +206,20 @@
     <button onclick="toggleHistory()">Historie anzeigen</button>
   </div>
 
+  <!-- Suchfeld -->
+  <div class="search-bar hidden" id="searchBar">
+    <input type="text" id="searchInput" placeholder="Einträge durchsuchen..." oninput="searchHistory()">
+  </div>
+
   <!-- Historie -->
   <div id="historyView" class="hidden">
     <h2>Historie</h2>
     <ul id="historyList"></ul>
+    <button onclick="exportToCSV()">Daten exportieren (CSV)</button>
   </div>
 
   <script>
-    const history = [];
+    const history = JSON.parse(localStorage.getItem('history')) || [];
 
     function toggleButton(button) {
       button.classList.toggle("highlight");
@@ -211,8 +233,9 @@
       const notes = document.getElementById("notes").value;
       const entry = `${timestamp}; ${selectedButtons}; ${notes}`;
       history.push(entry);
-      alert("Daten gespeichert!");
+      localStorage.setItem('history', JSON.stringify(history));
       resetInputs();
+      updateHistoryList();
     }
 
     function resetInputs() {
@@ -222,12 +245,48 @@
 
     function toggleHistory() {
       const historyView = document.getElementById("historyView");
-      const historyList = document.getElementById("historyList");
+      const searchBar = document.getElementById("searchBar");
       historyView.classList.toggle("hidden");
+      searchBar.classList.toggle("hidden");
       if (!historyView.classList.contains("hidden")) {
-        historyList.innerHTML = history.map(entry => `<li>${entry}</li>`).join("");
+        updateHistoryList();
+        document.getElementById("historyView").scrollIntoView({ behavior: "smooth" });
       }
     }
+
+    function updateHistoryList() {
+      const historyList = document.getElementById("historyList");
+      historyList.innerHTML = history.map(entry => `<li>${entry}</li>`).join("");
+    }
+
+    function searchHistory() {
+      const query = document.getElementById("searchInput").value.toLowerCase();
+      const filtered = history.filter(entry => entry.toLowerCase().includes(query));
+      const historyList = document.getElementById("historyList");
+      historyList.innerHTML = filtered.map(entry => `<li>${entry}</li>`).join("");
+    }
+
+    function exportToCSV() {
+      if (history.length === 0) {
+        alert("Es gibt keine Daten zum Exportieren.");
+        return;
+      }
+
+      const csvHeader = "Zeitstempel; Einträge; Notizen\n";
+      const csvContent = history.map(entry => entry.replace(/;/g, ";")).join("\n");
+      const csvData = csvHeader + csvContent;
+
+      const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = url;
+      downloadLink.setAttribute("download", "historie.csv");
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+
+    // Initialize
+    updateHistoryList();
   </script>
-</body>
-</html>
+</
