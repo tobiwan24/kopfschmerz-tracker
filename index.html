@@ -3,254 +3,150 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Daten Eingabe</title>
+  <title>Kopfschmerz-Tracker</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
-      box-sizing: border-box;
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: flex-start;
-      min-height: 100vh;
+      background-color: #f9f9f9;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 20px;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     }
 
     h1 {
       text-align: center;
-      margin: 20px 0;
     }
 
     .category {
-      width: 90%;
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 20px;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    }
-
-    .category-title {
-      margin-bottom: 10px;
-      font-size: 1.2rem;
-      font-weight: bold;
-    }
-
-    .kopfschmerzart {
-      background-color: #f8d7da;
-    }
-
-    .schmerzwahrnehmung {
-      background-color: #d4edda;
-    }
-
-    .begleitsymptome {
-      background-color: #d1ecf1;
-    }
-
-    .medikamente {
-      background-color: #fff3cd;
-    }
-
-    .button-row {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: space-between;
       margin: 10px 0;
+      padding: 10px;
+      border-radius: 5px;
     }
+
+    .kopfschmerzart { background-color: #ffcccc; }
+    .schmerzwahrnehmung { background-color: #ccffcc; }
+    .begleitsymptome { background-color: #ccccff; }
+    .medikamente { background-color: #ffffcc; }
 
     button {
-      flex: 1;
       margin: 5px;
-      padding: 10px 15px;
-      font-size: 1rem;
-      border: 1px solid #007BFF;
+      padding: 10px 20px;
+      border: none;
       border-radius: 5px;
-      background-color: #007BFF;
+      background-color: #007bff;
       color: white;
       cursor: pointer;
-      text-align: center;
-      transition: all 0.3s ease;
     }
 
-    button:hover {
+    button.active {
       background-color: #0056b3;
     }
 
-    button.highlight {
-      background-color: #28a745;
-      border-color: #28a745;
-    }
-
     textarea {
-      width: 90%;
-      max-width: 600px;
-      min-height: 80px;
-      margin: 10px 0;
-      padding: 10px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
+      width: 100%;
+      height: 100px;
+      margin-top: 10px;
       border-radius: 5px;
     }
 
-    .actions {
-      width: 90%;
-      max-width: 600px;
-      display: flex;
-      justify-content: space-between;
-      margin: 20px 0;
-    }
-
-    #historyView {
-      width: 90%;
-      max-width: 600px;
-      margin: 20px auto;
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      background-color: #f9f9f9;
-    }
-
-    #historyList {
-      list-style: none;
-      padding: 0;
-    }
-
-    #historyList li {
-      padding: 5px 10px;
-      margin: 5px 0;
-      background: #f1f1f1;
-      border: 1px solid #ccc;
-      border-radius: 5px;
+    .history {
+      margin-top: 20px;
     }
 
     .hidden {
       display: none;
     }
-
-    .search-bar {
-      margin: 10px 0;
-      width: 100%;
-      display: flex;
-      justify-content: center;
-    }
-
-    .search-bar input {
-      width: 90%;
-      max-width: 600px;
-      padding: 10px;
-      font-size: 1rem;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-    }
   </style>
 </head>
 <body>
-  <h1>Daten Eingabe</h1>
-  
-  <!-- Kategorie: Kopfschmerzart -->
-  <div class="category kopfschmerzart">
-    <div class="category-title">Kopfschmerzart</div>
-    <div class="button-row">
-      <button onclick="toggleButton(this)">Migräne</button>
-      <button onclick="toggleButton(this)">Spannungskopfschmerz</button>
+  <div class="container">
+    <h1>Kopfschmerz-Tracker</h1>
+
+    <div class="category kopfschmerzart">
+      <h3>Kopfschmerzart</h3>
+      <button onclick="toggleSelection(this)">Migräne</button>
+      <button onclick="toggleSelection(this)">Spannungskopfschmerz</button>
     </div>
-  </div>
 
-  <!-- Kategorie: Schmerzwahrnehmung -->
-  <div class="category schmerzwahrnehmung">
-    <div class="category-title">Schmerzwahrnehmung</div>
-    <div class="button-row">
-      <button onclick="toggleButton(this)">Pochend</button>
-      <button onclick="toggleButton(this)">Brennend</button>
-      <button onclick="toggleButton(this)">Dumpf/Drückend</button>
-      <button onclick="toggleButton(this)">Einseitig</button>
-      <button onclick="toggleButton(this)">Beidseitig</button>
+    <div class="category schmerzwahrnehmung">
+      <h3>Schmerzwahrnehmung</h3>
+      <button onclick="toggleSelection(this)">Pochend</button>
+      <button onclick="toggleSelection(this)">Brennend</button>
+      <button onclick="toggleSelection(this)">Dumpf/Drückend</button>
+      <button onclick="toggleSelection(this)">Einseitig</button>
+      <button onclick="toggleSelection(this)">Beidseitig</button>
     </div>
-  </div>
 
-  <!-- Kategorie: Begleitsymptome -->
-  <div class="category begleitsymptome">
-    <div class="category-title">Begleitsymptome</div>
-    <div class="button-row">
-      <button onclick="toggleButton(this)">Übelkeit</button>
-      <button onclick="toggleButton(this)">Reizempfindlichkeit</button>
-      <button onclick="toggleButton(this)">Mahlzeit ausgelassen</button>
-      <button onclick="toggleButton(this)">Sport</button>
-      <button onclick="toggleButton(this)">Wenig getrunken</button>
-      <button onclick="toggleButton(this)">Gefroren</button>
-      <button onclick="toggleButton(this)">Nackenverspannung</button>
+    <div class="category begleitsymptome">
+      <h3>Begleitsymptome</h3>
+      <button onclick="toggleSelection(this)">Übelkeit</button>
+      <button onclick="toggleSelection(this)">Reizempfindlichkeit</button>
+      <button onclick="toggleSelection(this)">Mahlzeit ausgelassen</button>
+      <button onclick="toggleSelection(this)">Sport</button>
+      <button onclick="toggleSelection(this)">Wenig getrunken</button>
+      <button onclick="toggleSelection(this)">Gefroren</button>
+      <button onclick="toggleSelection(this)">Nackenverspannung</button>
     </div>
-  </div>
 
-  <!-- Kategorie: Medikamente -->
-  <div class="category medikamente">
-    <div class="category-title">Medikamente</div>
-    <div class="button-row">
-      <button onclick="toggleButton(this)">Ibu 400</button>
-      <button onclick="toggleButton(this)">Ibu 600</button>
-      <button onclick="toggleButton(this)">Paracetamol 1000</button>
-      <button onclick="toggleButton(this)">Koffein</button>
-      <button onclick="toggleButton(this)">Triptan</button>
+    <div class="category medikamente">
+      <h3>Medikamente</h3>
+      <button onclick="toggleSelection(this)">Ibu 400</button>
+      <button onclick="toggleSelection(this)">Ibu 600</button>
+      <button onclick="toggleSelection(this)">Paracetamol 1000</button>
+      <button onclick="toggleSelection(this)">Koffein</button>
+      <button onclick="toggleSelection(this)">Triptan</button>
     </div>
-  </div>
 
-  <!-- Notizen -->
-  <textarea id="notes" placeholder="Notizen"></textarea>
-
-  <!-- Aktionen -->
-  <div class="actions">
-    <button onclick="saveData()">Speichern</button>
+    <textarea id="notes" placeholder="Notizen"></textarea>
+    <button onclick="saveEntry()">Speichern</button>
     <button onclick="toggleHistory()">Historie anzeigen</button>
-  </div>
+    <button onclick="exportToCSV()">Daten exportieren</button>
 
-  <!-- Suchfeld -->
-  <div class="search-bar hidden" id="searchBar">
-    <input type="text" id="searchInput" placeholder="Einträge durchsuchen..." oninput="searchHistory()">
-  </div>
-
-  <!-- Historie -->
-  <div id="historyView" class="hidden">
-    <h2>Historie</h2>
-    <ul id="historyList"></ul>
-    <button onclick="exportToCSV()">Daten exportieren (CSV)</button>
+    <div id="history" class="history hidden">
+      <h3>Historie</h3>
+      <ul id="historyList"></ul>
+    </div>
   </div>
 
   <script>
-    const history = JSON.parse(localStorage.getItem('history')) || [];
+    let history = JSON.parse(localStorage.getItem("history")) || [];
 
-    function toggleButton(button) {
-      button.classList.toggle("highlight");
+    function toggleSelection(button) {
+      button.classList.toggle("active");
     }
 
-    function saveData() {
+    function saveEntry() {
       const timestamp = new Date().toLocaleString();
-      const selectedButtons = Array.from(document.querySelectorAll("button.highlight"))
-        .map(button => button.textContent)
-        .join(", ");
-      const notes = document.getElementById("notes").value;
-      const entry = `${timestamp}; ${selectedButtons}; ${notes}`;
+      const activeButtons = document.querySelectorAll("button.active");
+      const selectedItems = Array.from(activeButtons).map(btn => btn.textContent);
+      const notes = document.getElementById("notes").value.trim();
+      const entry = `${timestamp}; ${selectedItems.join(", ")}; ${notes}`;
+
       history.push(entry);
-      localStorage.setItem('history', JSON.stringify(history));
-      resetInputs();
+      localStorage.setItem("history", JSON.stringify(history));
+
+      document.querySelectorAll("button.active").forEach(btn => btn.classList.remove("active"));
+      document.getElementById("notes").value = "";
+
       updateHistoryList();
     }
 
-    function resetInputs() {
-      document.querySelectorAll("button.highlight").forEach(button => button.classList.remove("highlight"));
-      document.getElementById("notes").value = "";
-    }
-
     function toggleHistory() {
-      const historyView = document.getElementById("historyView");
-      const searchBar = document.getElementById("searchBar");
-      historyView.classList.toggle("hidden");
-      searchBar.classList.toggle("hidden");
-      if (!historyView.classList.contains("hidden")) {
-        updateHistoryList();
-        document.getElementById("historyView").scrollIntoView({ behavior: "smooth" });
+      const historyDiv = document.getElementById("history");
+      historyDiv.classList.toggle("hidden");
+      if (!historyDiv.classList.contains("hidden")) {
+        historyDiv.scrollIntoView({ behavior: "smooth" });
       }
     }
 
@@ -259,23 +155,38 @@
       historyList.innerHTML = history.map(entry => `<li>${entry}</li>`).join("");
     }
 
-    function searchHistory() {
-      const query = document.getElementById("searchInput").value.toLowerCase();
-      const filtered = history.filter(entry => entry.toLowerCase().includes(query));
-      const historyList = document.getElementById("historyList");
-      historyList.innerHTML = filtered.map(entry => `<li>${entry}</li>`).join("");
-    }
-
     function exportToCSV() {
       if (history.length === 0) {
         alert("Es gibt keine Daten zum Exportieren.");
         return;
       }
 
-      const csvHeader = "Zeitstempel; Einträge; Notizen\n";
-      const csvContent = history.map(entry => entry.replace(/;/g, ";")).join("\n");
-      const csvData = csvHeader + csvContent;
+      const csvHeader = "Zeitstempel; Kopfschmerzart; Schmerzwahrnehmung; Begleitsymptome; Medikamente; Notizen\n";
+      const csvContent = history.map(entry => {
+        const [timestamp, data, notes] = entry.split("; ");
+        const categories = {
+          Kopfschmerzart: [],
+          Schmerzwahrnehmung: [],
+          Begleitsymptome: [],
+          Medikamente: [],
+        };
 
+        data.split(", ").forEach(item => {
+          if (["Migräne", "Spannungskopfschmerz"].includes(item)) {
+            categories.Kopfschmerzart.push(item);
+          } else if (["Pochend", "Brennend", "Dumpf/Drückend", "Einseitig", "Beidseitig"].includes(item)) {
+            categories.Schmerzwahrnehmung.push(item);
+          } else if (["Übelkeit", "Reizempfindlichkeit", "Mahlzeit ausgelassen", "Sport", "Wenig getrunken", "Gefroren", "Nackenverspannung"].includes(item)) {
+            categories.Begleitsymptome.push(item);
+          } else if (["Ibu 400", "Ibu 600", "Paracetamol 1000", "Koffein", "Triptan"].includes(item)) {
+            categories.Medikamente.push(item);
+          }
+        });
+
+        return `${timestamp}; ${categories.Kopfschmerzart.join(", ")}; ${categories.Schmerzwahrnehmung.join(", ")}; ${categories.Begleitsymptome.join(", ")}; ${categories.Medikamente.join(", ")}; ${notes}`;
+      }).join("\n");
+
+      const csvData = csvHeader + csvContent;
       const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const downloadLink = document.createElement("a");
@@ -286,6 +197,7 @@
       document.body.removeChild(downloadLink);
     }
 
-    // Initialize
     updateHistoryList();
   </script>
+</body>
+</html>
