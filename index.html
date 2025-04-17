@@ -3,95 +3,96 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="apple-mobile-web-app-capable" content="yes">
-  <meta name="apple-mobile-web-app-title" content="Kopfschmerz Tracker">
-  <title>Kopfschmerz Tracker</title>
+  <title>Daten Eingabe</title>
   <style>
-    body { font-family: Arial, sans-serif; margin: 20px; }
-    button { padding: 10px 20px; margin: 5px; font-size: 16px; }
-    textarea { width: 100%; height: 100px; margin-top: 10px; }
-    #output { margin-top: 20px; }
-    #history { margin-top: 30px; background: #f9f9f9; padding: 10px; border: 1px solid #ccc; display: none; }
+    button { margin: 5px; }
+    .hidden { display: none; }
+    .highlight { background-color: yellow; }
   </style>
 </head>
 <body>
-  <h1>Kopfschmerz Tracker</h1>
+  <h1>Daten Eingabe</h1>
   
-  <div>
-    <h3>Kopfschmerztyp:</h3>
-    <button onclick="saveData('Migräne')">Migräne</button>
-    <button onclick="saveData('Spannungskopfschmerz')">Spannungskopfschmerz</button>
+  <!-- Eingabeformular -->
+  <div id="inputView">
+    <h2>Wählen Sie aus:</h2>
+    <button onclick="toggleButton(this)">Migräne</button>
+    <button onclick="toggleButton(this)">Spannungskopfschmerz</button>
+    <button onclick="toggleButton(this)">Übelkeit</button>
+    <button onclick="toggleButton(this)">Nackenverspannung</button>
+    <br>
+    <textarea id="notes" placeholder="Notizen"></textarea>
+    <br>
+    <button onclick="saveData()">Speichern</button>
+    <button onclick="resetInputs()">Zurücksetzen</button>
   </div>
-  
-  <div>
-    <h3>Medikamente:</h3>
-    <button onclick="saveData('Ibu 400')">Ibu 400</button>
-    <button onclick="saveData('Paracetamol 1000')">Paracetamol 1000</button>
-    <button onclick="saveData('Koffein')">Koffein</button>
-  </div>
-  
-  <textarea id="notes" placeholder="Notizen eingeben..."></textarea>
-  <button onclick="saveNotes()">Speichern</button>
-  <button onclick="toggleHistory()">Historie anzeigen</button>
-  
-  <div id="output"></div>
-  
-  <div id="history">
-    <h3>Gespeicherte Daten:</h3>
-    <div id="history-content"></div>
-  </div>
-  
-  <script>
-    let data = [];
 
-    // Daten in der temporären Liste speichern
-    function saveData(value) {
-      data.push(value);
-      document.getElementById('output').innerText = `Auswahl: ${data.join(', ')}`;
+  <!-- Historie anzeigen -->
+  <div>
+    <button onclick="toggleHistory()">Historie anzeigen</button>
+    <button onclick="exportData()">Daten exportieren</button>
+  </div>
+  <div id="historyView" class="hidden">
+    <h2>Historie</h2>
+    <input type="text" id="search" placeholder="Eintrag suchen..." oninput="searchEntries()">
+    <ul id="historyList"></ul>
+  </div>
+
+  <script>
+    const history = [];
+
+    // Speichern der Daten
+    function saveData() {
+      const timestamp = new Date().toLocaleString();
+      const selectedButtons = Array.from(document.querySelectorAll("button.highlight"))
+        .map(button => button.textContent)
+        .join(", ");
+      const notes = document.getElementById("notes").value;
+      const entry = `${timestamp}; ${selectedButtons}; ${notes}`;
+      history.push(entry);
+      alert("Daten gespeichert!");
+      resetInputs();
     }
 
-    // Notizen und Daten speichern
-    function saveNotes() {
-      const notes = document.getElementById('notes').value;
-      const timestamp = new Date().toISOString();
-      const entry = `${timestamp}; ${data.join(', ')}; Notizen: ${notes}`;
-      
-      // Speichern in localStorage
-      const savedData = localStorage.getItem('kopfschmerz-tracker') || '[]';
-      const history = JSON.parse(savedData);
-      history.push(entry);
-      localStorage.setItem('kopfschmerz-tracker', JSON.stringify(history));
-      
-      alert('Daten gespeichert!');
+    // Buttons hervorheben
+    function toggleButton(button) {
+      button.classList.toggle("highlight");
+    }
 
-      // Eingabefelder zurücksetzen
-      data = [];
-      document.getElementById('notes').value = '';
-      document.getElementById('output').innerText = '';
+    // Eingabefelder zurücksetzen
+    function resetInputs() {
+      document.getElementById("notes").value = "";
+      document.querySelectorAll("button.highlight").forEach(button => button.classList.remove("highlight"));
     }
 
     // Historie anzeigen/ausblenden
     function toggleHistory() {
-      const historyDiv = document.getElementById('history');
-      const isVisible = historyDiv.style.display === 'block';
-
-      if (isVisible) {
-        historyDiv.style.display = 'none'; // Verstecken
-      } else {
-        loadHistory(); // Historie laden
-        historyDiv.style.display = 'block'; // Anzeigen
+      const historyView = document.getElementById("historyView");
+      const historyList = document.getElementById("historyList");
+      historyView.classList.toggle("hidden");
+      if (!historyView.classList.contains("hidden")) {
+        historyList.innerHTML = history.map(entry => `<li>${entry}</li>`).join("");
       }
     }
 
-    // Gespeicherte Daten anzeigen
-    function loadHistory() {
-      const savedData = localStorage.getItem('kopfschmerz-tracker') || '[]';
-      const history = JSON.parse(savedData);
+    // Daten exportieren
+    function exportData() {
+      const csvContent = "data:text/csv;charset=utf-8," + history.join("\n");
+      const encodedUri = encodeURI(csvContent);
+      const link = document.createElement("a");
+      link.setAttribute("href", encodedUri);
+      link.setAttribute("download", "history.csv");
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
 
-      const historyContent = document.getElementById('history-content');
-      historyContent.innerHTML = history.length
-        ? history.map(entry => `<p>${entry}</p>`).join('')
-        : '<p>Keine Daten vorhanden.</p>';
+    // Suchfunktion
+    function searchEntries() {
+      const searchTerm = document.getElementById("search").value.toLowerCase();
+      const filteredEntries = history.filter(entry => entry.toLowerCase().includes(searchTerm));
+      const historyList = document.getElementById("historyList");
+      historyList.innerHTML = filteredEntries.map(entry => `<li>${entry}</li>`).join("");
     }
   </script>
 </body>
