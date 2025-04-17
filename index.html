@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Kopfschmerz Tracker">
+  <title>Kopfschmerz Tracker</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    button { padding: 10px 20px; margin: 5px; font-size: 16px; }
+    textarea { width: 100%; height: 100px; margin-top: 10px; }
+    #output { margin-top: 20px; }
+    #history { margin-top: 30px; background: #f9f9f9; padding: 10px; border: 1px solid #ccc; display: none; }
+  </style>
+</head>
+<body>
+  <h1>Kopfschmerz Tracker</h1>
+  
+  <div>
+    <h3>Kopfschmerztyp:</h3>
+    <button onclick="saveData('Migräne')">Migräne</button>
+    <button onclick="saveData('Spannungskopfschmerz')">Spannungskopfschmerz</button>
+  </div>
+  
+  <div>
+    <h3>Medikamente:</h3>
+    <button onclick="saveData('Ibu 400')">Ibu 400</button>
+    <button onclick="saveData('Paracetamol 1000')">Paracetamol 1000</button>
+    <button onclick="saveData('Koffein')">Koffein</button>
+  </div>
+  
+  <textarea id="notes" placeholder="Notizen eingeben..."></textarea>
+  <button onclick="saveNotes()">Speichern</button>
+  <button onclick="toggleHistory()">Historie anzeigen</button>
+  
+  <div id="output"></div>
+  
+  <div id="history">
+    <h3>Gespeicherte Daten:</h3>
+    <div id="history-content"></div>
+  </div>
+  
+  <script>
+    let data = [];
+
+    // Daten in der temporären Liste speichern
+    function saveData(value) {
+      data.push(value);
+      document.getElementById('output').innerText = `Auswahl: ${data.join(', ')}`;
+    }
+
+    // Notizen und Daten speichern
+    function saveNotes() {
+      const notes = document.getElementById('notes').value;
+      const timestamp = new Date().toISOString();
+      const entry = `${timestamp}; ${data.join(', ')}; Notizen: ${notes}`;
+      
+      // Speichern in localStorage
+      const savedData = localStorage.getItem('kopfschmerz-tracker') || '[]';
+      const history = JSON.parse(savedData);
+      history.push(entry);
+      localStorage.setItem('kopfschmerz-tracker', JSON.stringify(history));
+      
+      alert('Daten gespeichert!');
+
+      // Eingabefelder zurücksetzen
+      data = [];
+      document.getElementById('notes').value = '';
+      document.getElementById('output').innerText = '';
+    }
+
+    // Historie anzeigen/ausblenden
+    function toggleHistory() {
+      const historyDiv = document.getElementById('history');
+      const isVisible = historyDiv.style.display === 'block';
+
+      if (isVisible) {
+        historyDiv.style.display = 'none'; // Verstecken
+      } else {
+        loadHistory(); // Historie laden
+        historyDiv.style.display = 'block'; // Anzeigen
+      }
+    }
+
+    // Gespeicherte Daten anzeigen
+    function loadHistory() {
+      const savedData = localStorage.getItem('kopfschmerz-tracker') || '[]';
+      const history = JSON.parse(savedData);
+
+      const historyContent = document.getElementById('history-content');
+      historyContent.innerHTML = history.length
+        ? history.map(entry => `<p>${entry}</p>`).join('')
+        : '<p>Keine Daten vorhanden.</p>';
+    }
+  </script>
+</body>
+</html>
