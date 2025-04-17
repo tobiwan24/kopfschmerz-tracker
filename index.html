@@ -16,7 +16,7 @@
     }
 
     .container {
-      max-width: 800px;
+      max-width: 600px;
       margin: 20px;
       padding: 20px;
       background: #fff;
@@ -28,20 +28,18 @@
       text-align: center;
     }
 
-    .category {
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: center;
       margin: 10px 0;
-      padding: 10px;
-      border-radius: 5px;
     }
 
-    .kopfschmerzart { background-color: #ffcccc; }
-    .schmerzwahrnehmung { background-color: #ccffcc; }
-    .begleitsymptome { background-color: #ccccff; }
-    .medikamente { background-color: #ffffcc; }
-
     button {
-      margin: 5px;
-      padding: 10px 20px;
+      flex: 1 1 30%;
+      min-width: 100px;
+      padding: 10px;
       border: none;
       border-radius: 5px;
       background-color: #007bff;
@@ -73,23 +71,14 @@
   <div class="container">
     <h1>Kopfschmerz-Tracker</h1>
 
-    <div class="category kopfschmerzart">
-      <h3>Kopfschmerzart</h3>
+    <div class="buttons">
       <button onclick="toggleSelection(this)">Migräne</button>
       <button onclick="toggleSelection(this)">Spannungskopfschmerz</button>
-    </div>
-
-    <div class="category schmerzwahrnehmung">
-      <h3>Schmerzwahrnehmung</h3>
       <button onclick="toggleSelection(this)">Pochend</button>
       <button onclick="toggleSelection(this)">Brennend</button>
       <button onclick="toggleSelection(this)">Dumpf/Drückend</button>
       <button onclick="toggleSelection(this)">Einseitig</button>
       <button onclick="toggleSelection(this)">Beidseitig</button>
-    </div>
-
-    <div class="category begleitsymptome">
-      <h3>Begleitsymptome</h3>
       <button onclick="toggleSelection(this)">Übelkeit</button>
       <button onclick="toggleSelection(this)">Reizempfindlichkeit</button>
       <button onclick="toggleSelection(this)">Mahlzeit ausgelassen</button>
@@ -97,10 +86,6 @@
       <button onclick="toggleSelection(this)">Wenig getrunken</button>
       <button onclick="toggleSelection(this)">Gefroren</button>
       <button onclick="toggleSelection(this)">Nackenverspannung</button>
-    </div>
-
-    <div class="category medikamente">
-      <h3>Medikamente</h3>
       <button onclick="toggleSelection(this)">Ibu 400</button>
       <button onclick="toggleSelection(this)">Ibu 600</button>
       <button onclick="toggleSelection(this)">Paracetamol 1000</button>
@@ -161,32 +146,10 @@
         return;
       }
 
-      const csvHeader = "Zeitstempel; Kopfschmerzart; Schmerzwahrnehmung; Begleitsymptome; Medikamente; Notizen\n";
-      const csvContent = history.map(entry => {
-        const [timestamp, data, notes] = entry.split("; ");
-        const categories = {
-          Kopfschmerzart: [],
-          Schmerzwahrnehmung: [],
-          Begleitsymptome: [],
-          Medikamente: [],
-        };
-
-        data.split(", ").forEach(item => {
-          if (["Migräne", "Spannungskopfschmerz"].includes(item)) {
-            categories.Kopfschmerzart.push(item);
-          } else if (["Pochend", "Brennend", "Dumpf/Drückend", "Einseitig", "Beidseitig"].includes(item)) {
-            categories.Schmerzwahrnehmung.push(item);
-          } else if (["Übelkeit", "Reizempfindlichkeit", "Mahlzeit ausgelassen", "Sport", "Wenig getrunken", "Gefroren", "Nackenverspannung"].includes(item)) {
-            categories.Begleitsymptome.push(item);
-          } else if (["Ibu 400", "Ibu 600", "Paracetamol 1000", "Koffein", "Triptan"].includes(item)) {
-            categories.Medikamente.push(item);
-          }
-        });
-
-        return `${timestamp}; ${categories.Kopfschmerzart.join(", ")}; ${categories.Schmerzwahrnehmung.join(", ")}; ${categories.Begleitsymptome.join(", ")}; ${categories.Medikamente.join(", ")}; ${notes}`;
-      }).join("\n");
-
+      const csvHeader = "Zeitstempel; Daten; Notizen\n";
+      const csvContent = history.map(entry => entry).join("\n");
       const csvData = csvHeader + csvContent;
+
       const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
       const url = URL.createObjectURL(blob);
       const downloadLink = document.createElement("a");
