@@ -17,23 +17,47 @@
       min-height: 100vh;
     }
 
-    h1, h2 {
+    h1 {
       text-align: center;
       margin: 20px 0;
     }
 
-    #inputView, #historyView {
+    .category {
       width: 90%;
       max-width: 600px;
       margin: 20px auto;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
       padding: 20px;
-      border: 1px solid #ccc;
       border-radius: 8px;
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-      background-color: #f9f9f9;
+    }
+
+    .category-title {
+      margin-bottom: 10px;
+      font-size: 1.2rem;
+      font-weight: bold;
+    }
+
+    .kopfschmerzart {
+      background-color: #f8d7da;
+    }
+
+    .schmerzwahrnehmung {
+      background-color: #d4edda;
+    }
+
+    .begleitsymptome {
+      background-color: #d1ecf1;
+    }
+
+    .medikamente {
+      background-color: #fff3cd;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      margin: 10px 0;
     }
 
     button {
@@ -60,7 +84,8 @@
     }
 
     textarea {
-      width: 100%;
+      width: 90%;
+      max-width: 600px;
       min-height: 80px;
       margin: 10px 0;
       padding: 10px;
@@ -69,17 +94,28 @@
       border-radius: 5px;
     }
 
-    .button-row {
+    .actions {
+      width: 90%;
+      max-width: 600px;
       display: flex;
-      flex-wrap: wrap;
       justify-content: space-between;
-      width: 100%;
+      margin: 20px 0;
+    }
+
+    #historyView {
+      width: 90%;
+      max-width: 600px;
+      margin: 20px auto;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background-color: #f9f9f9;
     }
 
     #historyList {
       list-style: none;
       padding: 0;
-      width: 100%;
     }
 
     #historyList li {
@@ -90,15 +126,6 @@
       border-radius: 5px;
     }
 
-    input[type="text"] {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 10px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      font-size: 1rem;
-    }
-
     .hidden {
       display: none;
     }
@@ -107,36 +134,75 @@
 <body>
   <h1>Daten Eingabe</h1>
   
-  <!-- Eingabeformular -->
-  <div id="inputView">
-    <h2>Wählen Sie aus:</h2>
+  <!-- Kategorie: Kopfschmerzart -->
+  <div class="category kopfschmerzart">
+    <div class="category-title">Kopfschmerzart</div>
     <div class="button-row">
       <button onclick="toggleButton(this)">Migräne</button>
       <button onclick="toggleButton(this)">Spannungskopfschmerz</button>
-      <button onclick="toggleButton(this)">Übelkeit</button>
-      <button onclick="toggleButton(this)">Nackenverspannung</button>
-    </div>
-    <textarea id="notes" placeholder="Notizen"></textarea>
-    <div class="button-row">
-      <button onclick="saveData()">Speichern</button>
     </div>
   </div>
 
-  <!-- Historie anzeigen -->
-  <div>
-    <button onclick="toggleHistory()">Historie anzeigen</button>
-    <button onclick="exportData()">Daten exportieren</button>
+  <!-- Kategorie: Schmerzwahrnehmung -->
+  <div class="category schmerzwahrnehmung">
+    <div class="category-title">Schmerzwahrnehmung</div>
+    <div class="button-row">
+      <button onclick="toggleButton(this)">Pochend</button>
+      <button onclick="toggleButton(this)">Brennend</button>
+      <button onclick="toggleButton(this)">Dumpf/Drückend</button>
+      <button onclick="toggleButton(this)">Einseitig</button>
+      <button onclick="toggleButton(this)">Beidseitig</button>
+    </div>
   </div>
+
+  <!-- Kategorie: Begleitsymptome -->
+  <div class="category begleitsymptome">
+    <div class="category-title">Begleitsymptome</div>
+    <div class="button-row">
+      <button onclick="toggleButton(this)">Übelkeit</button>
+      <button onclick="toggleButton(this)">Reizempfindlichkeit</button>
+      <button onclick="toggleButton(this)">Mahlzeit ausgelassen</button>
+      <button onclick="toggleButton(this)">Sport</button>
+      <button onclick="toggleButton(this)">Wenig getrunken</button>
+      <button onclick="toggleButton(this)">Gefroren</button>
+      <button onclick="toggleButton(this)">Nackenverspannung</button>
+    </div>
+  </div>
+
+  <!-- Kategorie: Medikamente -->
+  <div class="category medikamente">
+    <div class="category-title">Medikamente</div>
+    <div class="button-row">
+      <button onclick="toggleButton(this)">Ibu 400</button>
+      <button onclick="toggleButton(this)">Ibu 600</button>
+      <button onclick="toggleButton(this)">Paracetamol 1000</button>
+      <button onclick="toggleButton(this)">Koffein</button>
+      <button onclick="toggleButton(this)">Triptan</button>
+    </div>
+  </div>
+
+  <!-- Notizen -->
+  <textarea id="notes" placeholder="Notizen"></textarea>
+
+  <!-- Aktionen -->
+  <div class="actions">
+    <button onclick="saveData()">Speichern</button>
+    <button onclick="toggleHistory()">Historie anzeigen</button>
+  </div>
+
+  <!-- Historie -->
   <div id="historyView" class="hidden">
     <h2>Historie</h2>
-    <input type="text" id="search" placeholder="Eintrag suchen..." oninput="searchEntries()">
     <ul id="historyList"></ul>
   </div>
 
   <script>
     const history = [];
 
-    // Speichern der Daten
+    function toggleButton(button) {
+      button.classList.toggle("highlight");
+    }
+
     function saveData() {
       const timestamp = new Date().toLocaleString();
       const selectedButtons = Array.from(document.querySelectorAll("button.highlight"))
@@ -146,21 +212,14 @@
       const entry = `${timestamp}; ${selectedButtons}; ${notes}`;
       history.push(entry);
       alert("Daten gespeichert!");
-      resetInputs(); // Eingabefelder zurücksetzen nach Speicherung
+      resetInputs();
     }
 
-    // Buttons hervorheben
-    function toggleButton(button) {
-      button.classList.toggle("highlight");
-    }
-
-    // Eingabefelder zurücksetzen
     function resetInputs() {
-      document.getElementById("notes").value = "";
       document.querySelectorAll("button.highlight").forEach(button => button.classList.remove("highlight"));
+      document.getElementById("notes").value = "";
     }
 
-    // Historie anzeigen/ausblenden
     function toggleHistory() {
       const historyView = document.getElementById("historyView");
       const historyList = document.getElementById("historyList");
@@ -168,26 +227,6 @@
       if (!historyView.classList.contains("hidden")) {
         historyList.innerHTML = history.map(entry => `<li>${entry}</li>`).join("");
       }
-    }
-
-    // Daten exportieren
-    function exportData() {
-      const csvContent = "data:text/csv;charset=utf-8," + history.join("\n");
-      const encodedUri = encodeURI(csvContent);
-      const link = document.createElement("a");
-      link.setAttribute("href", encodedUri);
-      link.setAttribute("download", "history.csv");
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    }
-
-    // Suchfunktion
-    function searchEntries() {
-      const searchTerm = document.getElementById("search").value.toLowerCase();
-      const filteredEntries = history.filter(entry => entry.toLowerCase().includes(searchTerm));
-      const historyList = document.getElementById("historyList");
-      historyList.innerHTML = filteredEntries.map(entry => `<li>${entry}</li>`).join("");
     }
   </script>
 </body>
