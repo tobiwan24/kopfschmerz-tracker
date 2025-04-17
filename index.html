@@ -5,9 +5,103 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Daten Eingabe</title>
   <style>
-    button { margin: 5px; }
-    .hidden { display: none; }
-    .highlight { background-color: yellow; }
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+    }
+
+    h1, h2 {
+      text-align: center;
+      margin: 20px 0;
+    }
+
+    #inputView, #historyView {
+      width: 90%;
+      max-width: 600px;
+      margin: 20px auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+      background-color: #f9f9f9;
+    }
+
+    button {
+      flex: 1;
+      margin: 5px;
+      padding: 10px 15px;
+      font-size: 1rem;
+      border: 1px solid #007BFF;
+      border-radius: 5px;
+      background-color: #007BFF;
+      color: white;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    button.highlight {
+      background-color: #28a745;
+      border-color: #28a745;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 80px;
+      margin: 10px 0;
+      padding: 10px;
+      font-size: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    .button-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      width: 100%;
+    }
+
+    #historyList {
+      list-style: none;
+      padding: 0;
+      width: 100%;
+    }
+
+    #historyList li {
+      padding: 5px 10px;
+      margin: 5px 0;
+      background: #f1f1f1;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      margin-bottom: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 1rem;
+    }
+
+    .hidden {
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -16,15 +110,17 @@
   <!-- Eingabeformular -->
   <div id="inputView">
     <h2>Wählen Sie aus:</h2>
-    <button onclick="toggleButton(this)">Migräne</button>
-    <button onclick="toggleButton(this)">Spannungskopfschmerz</button>
-    <button onclick="toggleButton(this)">Übelkeit</button>
-    <button onclick="toggleButton(this)">Nackenverspannung</button>
-    <br>
+    <div class="button-row">
+      <button onclick="toggleButton(this)">Migräne</button>
+      <button onclick="toggleButton(this)">Spannungskopfschmerz</button>
+      <button onclick="toggleButton(this)">Übelkeit</button>
+      <button onclick="toggleButton(this)">Nackenverspannung</button>
+    </div>
     <textarea id="notes" placeholder="Notizen"></textarea>
-    <br>
-    <button onclick="saveData()">Speichern</button>
-    <button onclick="resetInputs()">Zurücksetzen</button>
+    <div class="button-row">
+      <button onclick="saveData()">Speichern</button>
+      <button onclick="resetInputs()">Zurücksetzen</button>
+    </div>
   </div>
 
   <!-- Historie anzeigen -->
