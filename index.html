@@ -6,9 +6,7 @@
   <title>Kopfschmerz-Tracker</title>
   <style>
     body {
-      font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-      font-size: 16px;
-      line-height: 1.5;
+      font-family: Arial, sans-serif;
       margin: 0;
       padding: 0;
       display: flex;
@@ -27,14 +25,7 @@
     }
 
     h1 {
-      font-size: 24px;
       text-align: center;
-      margin-bottom: 20px;
-    }
-
-    h3 {
-      font-size: 18px;
-      margin: 10px 0;
     }
 
     .category {
@@ -55,7 +46,6 @@
       border-radius: 5px;
       background-color: #007bff;
       color: white;
-      font-size: 14px;
       cursor: pointer;
     }
 
@@ -68,8 +58,6 @@
       height: 100px;
       margin-top: 10px;
       border-radius: 5px;
-      font-size: 14px;
-      padding: 10px;
     }
 
     .history {
@@ -124,6 +112,8 @@
     <button onclick="saveEntry()">Speichern</button>
     <button onclick="toggleHistory()">Historie anzeigen</button>
     <button onclick="exportToCSV()">Daten exportieren</button>
+    <button onclick="importCSV()">Daten importieren</button>
+    <input type="file" id="csvFileInput" accept=".csv" style="display:none;" onchange="handleFile(event)">
 
     <div id="history" class="history hidden">
       <h3>Historie</h3>
@@ -132,7 +122,93 @@
   </div>
 
   <script>
-    // Der JavaScript-Code bleibt unverändert, wie zuvor beschrieben.
+    let history = JSON.parse(localStorage.getItem("history")) || [];
+
+    function toggleSelection(button) {
+      button.classList.toggle("active");
+    }
+
+    function saveEntry() {
+      const timestamp = new Date().toLocaleString();
+      const activeButtons = document.querySelectorAll("button.active");
+      const selectedItems = Array.from(activeButtons).map(btn => btn.textContent);
+      const notes = document.getElementById("notes").value.trim();
+      const entry = `${timestamp}; ${selectedItems.join(", ")}; ${notes}`;
+
+      history.push(entry);
+      localStorage.setItem("history", JSON.stringify(history));
+
+      document.querySelectorAll("button.active").forEach(btn => btn.classList.remove("active"));
+      document.getElementById("notes").value = "";
+
+      updateHistoryList();
+    }
+
+    function toggleHistory() {
+      const historyDiv = document.getElementById("history");
+      historyDiv.classList.toggle("hidden");
+      if (!historyDiv.classList.contains("hidden")) {
+        historyDiv.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+
+    function updateHistoryList() {
+      const historyList = document.getElementById("historyList");
+      historyList.innerHTML = history.map(entry => `<li>${entry}</li>`).join("");
+    }
+
+    function exportToCSV() {
+      if (history.length === 0) {
+        alert("Es gibt keine Daten zum Exportieren.");
+        return;
+      }
+
+      const csvHeader = "Zeitstempel; Kopfschmerzart; Schmerzwahrnehmung; Begleitsymptome; Medikamente; Notizen\n";
+      const csvContent = history.map(entry => entry).join("\n");
+      const csvData = csvHeader + csvContent;
+      const blob = new Blob([csvData], { type: "text/csv;charset=utf-8;" });
+      const url = URL.createObjectURL(blob);
+      const downloadLink = document.createElement("a");
+      downloadLink.href = url;
+      downloadLink.setAttribute("download", "historie.csv");
+      document.body.appendChild(downloadLink);
+      downloadLink.click();
+      document.body.removeChild(downloadLink);
+    }
+
+    function importCSV() {
+      document.getElementById('csvFileInput').click();
+    }
+
+    function handleFile(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const csvData = e.target.result.split('\n').map(row => row.trim()).filter(row => row);
+        if (csvData[0].startsWith("Zeitstempel;")) csvData.shift();
+
+        let newEntries = 0;
+        csvData.forEach(row => {
+          if (!history.includes(row)) {
+            history.push(row);
+            newEntries++;
+          }
+        });
+
+        if (newEntries > 0) {
+          localStorage.setItem("history", JSON.stringify(history));
+          updateHistoryList();
+          alert(`${newEntries} Einträge importiert.`);
+        } else {
+          alert("Keine neuen Einträge importiert.");
+        }
+      };
+      reader.readAsText(file);
+    }
+
+    updateHistoryList();
   </script>
 </body>
 </html>
